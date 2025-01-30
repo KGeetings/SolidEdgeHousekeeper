@@ -78,6 +78,7 @@ Public Class UtilsMaterials
     Public Function UpdateMaterialFromMaterialTable(
         ByVal SEDoc As SolidEdgeFramework.SolidEdgeDocument,
         ActiveMaterialLibrary As String,
+		KeepFaceStyleOverrides As Boolean,
         RemoveFaceStyleOverrides As Boolean,
         ByVal SEApp As SolidEdgeFramework.Application
         ) As Dictionary(Of Integer, List(Of String))

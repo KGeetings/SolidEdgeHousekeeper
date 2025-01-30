@@ -30,6 +30,16 @@ Public Class TaskUpdateMaterialFromMaterialTable
         End Set
     End Property
 
+    Private _KeepFaceStyleOverrides As Boolean
+    Public Property KeepFaceStyleOverrides As Boolean
+        Get
+            Return _KeepFaceStyleOverrides
+        End Get
+        Set(value As Boolean)
+            _KeepFaceStyleOverrides = value
+        End Set
+    End Property
+
     Private _RemoveFaceStyleOverrides As Boolean
     Public Property RemoveFaceStyleOverrides As Boolean
         Get
@@ -75,6 +85,7 @@ Public Class TaskUpdateMaterialFromMaterialTable
         UseConfigurationPageTemplates
         Browse
         MaterialTable
+        KeepFaceStyleOverrides
         RemoveFaceStyleOverrides
         'StructuredStorageEdit
         AutoHideOptions
@@ -105,6 +116,7 @@ Public Class TaskUpdateMaterialFromMaterialTable
 
         ' Options
         Me.MaterialTable = ""
+        Me.KeepFaceStyleOverrides = False
         Me.RemoveFaceStyleOverrides = False
     End Sub
 
@@ -158,7 +170,7 @@ Public Class TaskUpdateMaterialFromMaterialTable
         Select Case DocType
             Case "par", "psm"
                 Dim UM As New UtilsMaterials
-                SupplementalErrorMessage = UM.UpdateMaterialFromMaterialTable(SEDoc, Me.MaterialTable, Me.RemoveFaceStyleOverrides, SEApp)
+                SupplementalErrorMessage = UM.UpdateMaterialFromMaterialTable(SEDoc, Me.MaterialTable, Me.KeepFaceStyleOverrides, Me.RemoveFaceStyleOverrides, SEApp)
                 AddSupplementalErrorMessage(ExitStatus, ErrorMessageList, SupplementalErrorMessage)
 
             Case Else

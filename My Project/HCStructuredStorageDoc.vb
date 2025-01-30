@@ -1251,7 +1251,7 @@ Public Class HCStructuredStorageDoc
             ' Index  000 001 ... 033 034 035 036 ... 145 146 147 148 149 150 ... 183 184 185 186 187 188 ... 413 414 415 416
             ' Indicator               <>                              <>          <    >                              <    >
             ' Byte    56  57      00  44  3a  5c ...  2e  70  61  72  00  ff ...  03  00  44  00  3a  00 ...  72  00  01  00
-            ' Ascii    ?   ?       ?   D   :   \ ...   .   p   a   r   ?   ? ...   ?   ?   D   ?   :   ? ...   ?   ?   ?   ?  
+            ' Ascii    ?   ?       ?   D   :   \ ...   .   p   a   r   ?   ? ...   ?   ?   D   ?   :   ? ...   ?   ?   ?   ?
             ' Var                    iS1                         iE1                     iS2                      iE2
 
             ' EXAMPLE (cont)
@@ -1348,7 +1348,7 @@ Public Class HCStructuredStorageDoc
             ' "CONTAINER": Full path filename
             ' }
             ' Assumes the order is DOSNAME, ABSOLUTE, RELATIVE.  Ignores any matches after those.
-            ' 
+            '
             ' The search starts at the end of the byte array.  If an extension is detected,
             ' it proceeds towards the start until a filename start indicator is reached.
             ' For Ascii strings the indicator is &H00.  For Unicode it is &H03 &H00
@@ -1742,6 +1742,7 @@ Public Class HCStructuredStorageDoc
             Dim MatTableMatl As Material = Nothing
             Dim Proceed As Boolean = True
             Dim tf As Boolean
+            Dim KeepFaceStyleOverrides As Boolean = True
 
             If SSDoc.PropSets Is Nothing Then
                 Throw New Exception(String.Format("Properties not initialized in '{0}'", IO.Path.GetFileName(SSDoc.FullName)))
@@ -1766,7 +1767,9 @@ Public Class HCStructuredStorageDoc
             If Proceed Then
                 Try
                     tf = SSDoc.SetPropValue("System", "Material", Matl, AddProperty:=False)
-                    tf = tf And SSDoc.SetPropValue("System", "Face Style", MatTableMatl.FaceStyle, AddProperty:=False)
+                    If KeepFaceStyleOverrides Then
+                        tf = tf And SSDoc.SetPropValue("System", "Face Style", MatTableMatl.FaceStyle, AddProperty:=False)
+                    End If
                     tf = tf And SSDoc.SetPropValue("System", "Fill Style", MatTableMatl.FillStyle, AddProperty:=False)
                     tf = tf And SSDoc.SetPropValue("System", "Virtual Style", MatTableMatl.VirtualStyle, AddProperty:=False)
                     tf = tf And SSDoc.SetPropValue("System", "Coef. of Thermal Exp", MatTableMatl.CoefOfThermalExp, AddProperty:=False)
@@ -1793,6 +1796,7 @@ Public Class HCStructuredStorageDoc
             Dim Matl As String
             Dim MatTableMatl As Material
             Dim tf As Boolean
+            Dim KeepFaceStyleOverrides As Boolean = True
             Dim Threshold As Double = 0.001
 
             If SSDoc.PropSets Is Nothing Then
@@ -1806,7 +1810,9 @@ Public Class HCStructuredStorageDoc
             If MatTableMatl Is Nothing Then
                 IsUpToDate = False
             Else
-                tf = MatTableMatl.FaceStyle = CStr(SSDoc.GetPropValue("System", "Face Style"))
+                If KeepFaceStyleOverrides Then
+                    tf = tf And MatTableMatl.FaceStyle = CStr(SSDoc.GetPropValue("System", "Face Style"))
+                End If
                 tf = tf And MatTableMatl.FillStyle = CStr(SSDoc.GetPropValue("System", "Fill Style"))
                 'tf = tf And MatTableMatl.VirtualStyle = CStr(SSDoc.GetPropValue("System", "Virtual Style"))
                 tf = tf And CloseEnough(MatTableMatl.CoefOfThermalExp, CDbl(SSDoc.GetPropValue("System", "Coef. of Thermal Exp")), Threshold)
@@ -1934,6 +1940,8 @@ Public Class HCStructuredStorageDoc
                         End If
                     Next
                     Me.Gages.Add(Gage)
+					' Write to console Gage.BendRadius
+					Console.WriteLine(Gage.BendRadius)
                 Else
                     If ChildNode.HasChildNodes Then
                         TraverseNodes(ChildNode)

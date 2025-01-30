@@ -71,6 +71,19 @@ Public Class TaskEditProperties
         End Set
     End Property
 
+    Private _KeepFaceStyleOverrides As Boolean
+    Public Property KeepFaceStyleOverrides As Boolean
+        Get
+            Return _KeepFaceStyleOverrides
+        End Get
+        Set(value As Boolean)
+            _KeepFaceStyleOverrides = value
+            If Me.TaskOptionsTLP IsNot Nothing Then
+                CType(ControlsDict(ControlNames.KeepFaceStyleOverrides.ToString), CheckBox).Checked = value
+            End If
+        End Set
+    End Property
+
     Private _RemoveFaceStyleOverrides As Boolean
     Public Property RemoveFaceStyleOverrides As Boolean
         Get
@@ -119,6 +132,7 @@ Public Class TaskEditProperties
         UseConfigurationPageTemplates
         Browse
         MaterialTable
+        KeepFaceStyleOverrides
         RemoveFaceStyleOverrides
         StructuredStorageEdit
         AutoHideOptions
@@ -152,6 +166,7 @@ Public Class TaskEditProperties
         Me.JSONString = ""
         Me.AutoAddMissingProperty = False
         Me.AutoUpdateMaterial = False
+        Me.KeepFaceStyleOverrides = False
         Me.RemoveFaceStyleOverrides = False
         Me.StructuredStorageEdit = False
         'Me.SolidEdgeRequired = False
@@ -200,7 +215,7 @@ Public Class TaskEditProperties
         ByVal SEApp As SolidEdgeFramework.Application
         ) As Dictionary(Of Integer, List(Of String))
 
-        ' Convert glob to regex 
+        ' Convert glob to regex
         ' https://stackoverflow.com/questions/74683013/regex-to-glob-and-vice-versa-conversion
         ' https://stackoverflow.com/questions/11276909/how-to-convert-between-a-glob-pattern-and-a-regexp-pattern-in-ruby
         ' https://learn.microsoft.com/en-us/dotnet/visual-basic/language-reference/operators/like-operator
@@ -305,7 +320,7 @@ Public Class TaskEditProperties
         ' Structured Storage
         ' https://github.com/ironfede/openmcdf
 
-        ' Convert glob to regex 
+        ' Convert glob to regex
         ' https://stackoverflow.com/questions/74683013/regex-to-glob-and-vice-versa-conversion
         ' https://stackoverflow.com/questions/11276909/how-to-convert-between-a-glob-pattern-and-a-regexp-pattern-in-ruby
         ' https://learn.microsoft.com/en-us/dotnet/visual-basic/language-reference/operators/like-operator
@@ -849,7 +864,7 @@ Public Class TaskEditProperties
                         Case "par", "psm"
                             Dim UM As New UtilsMaterials
                             SupplementalErrorMessage = UM.UpdateMaterialFromMaterialTable(
-                                        SEDoc, Me.MaterialTable, Me.RemoveFaceStyleOverrides, SEApp)
+                                        SEDoc, Me.MaterialTable, Me.KeepFaceStyleOverrides, Me.RemoveFaceStyleOverrides, SEApp)
 
                             AddSupplementalErrorMessage(ExitStatus, ErrorMessageList, SupplementalErrorMessage)
 
@@ -938,6 +953,14 @@ Public Class TaskEditProperties
         tmpTLPOptions.Controls.Add(TextBox, 1, RowIndex)
         ControlsDict(TextBox.Name) = TextBox
         TextBox.Visible = False
+
+        RowIndex += 1
+
+        CheckBox = FormatOptionsCheckBox(ControlNames.KeepFaceStyleOverrides.ToString, "Keep face style overrides")
+        AddHandler CheckBox.CheckedChanged, AddressOf CheckBoxOptions_Check_Changed
+        tmpTLPOptions.Controls.Add(CheckBox, 0, RowIndex)
+        tmpTLPOptions.SetColumnSpan(CheckBox, 2)
+        ControlsDict(CheckBox.Name) = CheckBox
 
         RowIndex += 1
 
@@ -1079,6 +1102,7 @@ Public Class TaskEditProperties
         'Dim Ctrl As Control
         Dim Button As Button
         Dim TextBox As TextBox
+		Dim CheckBox1 As CheckBox
         Dim CheckBox2 As CheckBox
 
         Select Case Name
@@ -1097,6 +1121,8 @@ Public Class TaskEditProperties
                 TextBox = CType(ControlsDict(ControlNames.MaterialTable.ToString), TextBox)
                 TextBox.Visible = Me.AutoUpdateMaterial And Not CheckBox2.Checked
 
+                CheckBox1 = CType(ControlsDict(ControlNames.KeepFaceStyleOverrides.ToString), CheckBox)
+
                 CheckBox2 = CType(ControlsDict(ControlNames.RemoveFaceStyleOverrides.ToString), CheckBox)
                 CheckBox2.Visible = Me.AutoUpdateMaterial
 
@@ -1113,6 +1139,9 @@ Public Class TaskEditProperties
                     CType(ControlsDict(ControlNames.MaterialTable.ToString), TextBox).Visible = True
 
                 End If
+
+            Case ControlNames.KeepFaceStyleOverrides.ToString
+                Me.KeepFaceStyleOverrides = Checkbox.Checked
 
             Case ControlNames.RemoveFaceStyleOverrides.ToString
                 Me.RemoveFaceStyleOverrides = Checkbox.Checked
