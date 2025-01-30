@@ -3,11 +3,17 @@
   <PropertyGroup>
     <RootNamespace>ListViewExtended</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <UseApplicationFramework>False</UseApplicationFramework>
+    <ImportedNamespaces>system.windows.forms=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,ListViewExtended=True</ImportedNamespaces>
   </PropertyGroup>
 
   <ItemGroup>
+    <Import Include="system.windows.forms" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.Windows.Forms">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.Forms.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Windows.Forms.dll</HintPath>
     </Reference>
   </ItemGroup>
 
