@@ -572,6 +572,19 @@ Public Class Form_Main
         End Set
     End Property
 
+    Private _KeepUnsortedDuplicates As Boolean
+    Public Property KeepUnsortedDuplicates As Boolean
+        Get
+            Return _KeepUnsortedDuplicates
+        End Get
+        Set(value As Boolean)
+            _KeepUnsortedDuplicates = value
+            If Me.TabControl1 IsNot Nothing Then
+                CheckBoxKeepUnsortedDuplicates.Checked = value
+            End If
+        End Set
+    End Property
+
     Private _SortAlphabetical As Boolean
     Public Property SortAlphabetical As Boolean
         Get
@@ -622,6 +635,7 @@ Public Class Form_Main
             If Me.TabControl1 IsNot Nothing Then
                 RadioButtonSortRandomSample.Checked = value
                 TextBoxSortRandomSampleFraction.Enabled = value
+                LabelSortRandomSampleFraction.Enabled = value
             End If
         End Set
     End Property
@@ -2348,17 +2362,16 @@ Public Class Form_Main
     Private Sub RadioButtonSortDependency_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButtonSortDependency.CheckedChanged
         Me.SortDependency = RadioButtonSortDependency.Checked
 
+        CheckBoxSortIncludeNoDependencies.Visible = Me.SortDependency
+
         ListViewFilesOutOfDate = True
 
-        If RadioButtonSortDependency.Checked Then
-            CheckBoxSortIncludeNoDependencies.Enabled = True
-        Else
-            CheckBoxSortIncludeNoDependencies.Enabled = False
-        End If
     End Sub
 
     Private Sub RadioButtonSortNone_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButtonSortNone.CheckedChanged
         Me.SortNone = RadioButtonSortNone.Checked
+
+        CheckBoxKeepUnsortedDuplicates.Visible = Me.SortNone
 
         ListViewFilesOutOfDate = True
     End Sub
@@ -2378,13 +2391,11 @@ Public Class Form_Main
     Private Sub RadioButtonSortRandomSample_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButtonSortRandomSample.CheckedChanged
         Me.SortRandomSample = RadioButtonSortRandomSample.Checked
 
+        TextBoxSortRandomSampleFraction.Visible = Me.SortRandomSample
+        LabelSortRandomSampleFraction.Visible = Me.SortRandomSample
+
         ListViewFilesOutOfDate = True
 
-        If RadioButtonSortRandomSample.Checked Then
-            TextBoxSortRandomSampleFraction.Enabled = True
-        Else
-            TextBoxSortRandomSampleFraction.Enabled = False
-        End If
     End Sub
 
     Private Sub TextBoxRandomSampleFraction_LostFocus(sender As Object, e As EventArgs) Handles TextBoxSortRandomSampleFraction.LostFocus
@@ -3677,6 +3688,15 @@ Public Class Form_Main
         e.DrawDefault = True
     End Sub
 
+    Private Sub CheckBoxKeepUnsortedDuplicates_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBoxKeepUnsortedDuplicates.CheckedChanged
+        Me.KeepUnsortedDuplicates = CheckBoxKeepUnsortedDuplicates.Checked
+
+        ListViewFilesOutOfDate = True
+    End Sub
+
+    Private Sub CheckBoxKeepDuplicates_CheckedChanged(sender As Object, e As EventArgs)
+
+    End Sub
 End Class
 
 
