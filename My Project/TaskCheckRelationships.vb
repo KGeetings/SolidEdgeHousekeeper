@@ -278,21 +278,21 @@ Public Class TaskCheckRelationships
 
         Dim SuppressedOccurrences As New List(Of SolidEdgeAssembly.Occurrence)
 
-        'Dim ComponentType As SolidEdgeAssembly.AssemblyComponentTypeConstants
-        'ComponentType = SolidEdgeAssembly.AssemblyComponentTypeConstants.seAssemblyComponentTypeAll
-        'Dim ComponentCount As Integer
-        ''Dim SuppressedComponents() As Object = Nothing
-        'Dim SuppressedComponents As Array = Nothing
-        'tmpSEDoc.GetSuppressedComponents(ComponentType, ComponentCount, SuppressedComponents)
+        Dim ComponentType As SolidEdgeAssembly.AssemblyComponentTypeConstants
+        ComponentType = SolidEdgeAssembly.AssemblyComponentTypeConstants.seAssemblyComponentTypeAll
+        Dim ComponentCount As Integer
+        'Dim SuppressedComponents() As Object = Nothing
+        Dim SuppressedComponents As Array = Nothing
+        tmpSEDoc.GetSuppressedComponents(ComponentType, ComponentCount, SuppressedComponents)
 
-        'For Each Component As Object In SuppressedComponents
-        '    Try
-        '        Dim tmpComponent As SolidEdgeAssembly.Occurrence = CType(Component, SolidEdgeAssembly.Occurrence)
-        '        SuppressedOccurrences.Add(tmpComponent)
-        '    Catch ex As Exception
-        '
-        '    End Try
-        'Next
+        For Each Component As Object In SuppressedComponents
+            Try
+                Dim tmpComponent As SolidEdgeAssembly.Occurrence = CType(Component, SolidEdgeAssembly.Occurrence)
+                SuppressedOccurrences.Add(tmpComponent)
+            Catch ex As Exception
+
+            End Try
+        Next
 
         Return SuppressedOccurrences
     End Function
